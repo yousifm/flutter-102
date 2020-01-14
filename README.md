@@ -6,7 +6,7 @@ All Flutter widgets with documentation can be found here: [Flutter Widget Catalo
 
 # Widgets used so far:
 
-# General:
+## General:
 
 - [Text](https://api.flutter.dev/flutter/widgets/Text-class.html)
 
@@ -14,7 +14,7 @@ All Flutter widgets with documentation can be found here: [Flutter Widget Catalo
 
 - [Padding](https://api.flutter.dev/flutter/widgets/Padding-class.html)
 
-# Material (Android):
+## Material (Android):
 
 - [MaterialApp](https://api.flutter.dev/flutter/material/MaterialApp-class.html)
 
@@ -30,7 +30,7 @@ All Flutter widgets with documentation can be found here: [Flutter Widget Catalo
 
 - [Card](https://api.flutter.dev/flutter/material/Card-class.html)
 
-# Other Classes:
+## Other Classes:
 
 - [EdgeInsets](https://api.flutter.dev/flutter/painting/EdgeInsets-class.html)
 
