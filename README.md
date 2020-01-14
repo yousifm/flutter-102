@@ -2,7 +2,7 @@
 
 Code for expense management app started in DSC CUHK Flutter-102
 
-#### For a similar Flutter project check [](https://github.com/yousifm/flutter_expenses)
+#### [Link to a similar Flutter project I created](https://github.com/yousifm/flutter_expenses)
 
 #### All Flutter widgets with documentation can be found here: [Flutter Widget Catalog](https://flutter.dev/docs/development/ui/widgets)
 
