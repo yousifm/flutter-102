@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
+import 'expense_item.dart';
+import 'add_screen.dart';
 import 'expense.dart';
 
 //Tells flutter to run an instance of MyApp once the program starts
-main() => runApp(MyApp());
+main() =>
+    runApp(ChangeNotifierProvider.value(value: Expenses(), child: MyApp()));
 
 //StatelessWidget means this widget doesn't need to redraw when data changes
+
 class MyApp extends StatelessWidget {
-  //Each widget has a build function that returns what flutter needs to draw
-  //Flutter provides a BuildContext with carries data about the widget tree
   @override
   Widget build(BuildContext context) {
     /* We are returning a MaterialApp which is the flutter widget to initialize
@@ -18,7 +21,11 @@ class MyApp extends StatelessWidget {
      */
     return MaterialApp(
       title: "Expenses", //Name of the app
-      home: HomeScreen(), //The screen to show on app start
+      theme: ThemeData(primarySwatch: Colors.blue),
+      routes: {
+        '/': (context) => HomeScreen(),
+        AddNoteScreen.routeName: (context) => AddNoteScreen()
+      },
     );
   }
 }
@@ -29,7 +36,7 @@ class MyApp extends StatelessWidget {
  * handles drawing and redrawing of the widget
  */
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key key}) : super(key: key);
+  HomeScreen();
 
   //createState is used to tell Flutter the state class associated with this
   //stateful widget
@@ -43,13 +50,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   //Sample expenses list for testing
-  List<Expense> expenses = [
-    Expense("Laptop", 2000, DateTime.now()),
-    Expense("Laptop", 2000, DateTime.now()),
-  ];
+
+  navigateToAddNote() {
+    Navigator.of(context).pushNamed(AddNoteScreen.routeName);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final e = Provider.of<Expenses>(context);
+
     //A Scaffold tells flutter that this widget takes up the entire area of
     //the screen
     return Scaffold(
@@ -75,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.white,
             //The onPressed parameter takes a function that is called when
             //the button is pressed
-            onPressed: () {},
+            onPressed: navigateToAddNote,
           )
         ],
       ),
@@ -88,10 +97,14 @@ class _HomeScreenState extends State<HomeScreen> {
        * while a builder method only builds the items that are displayed
        * onscreen which is more efficient
        */
-      body: ListView.builder(
-        itemBuilder: (context, index) => ExpenseItem(expenses[index]),
-        itemCount: expenses.length,
-      ),
+      body: e.loading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ListView.builder(
+              itemBuilder: (context, index) => ExpenseItem(e.expenses[index]),
+              itemCount: e.expenses.length,
+            ),
 
       /* A floatingActionButton is an android specific widget that shows a
        * floating button at the bottom of the screen. This one is another
@@ -100,66 +113,8 @@ class _HomeScreenState extends State<HomeScreen> {
        */
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: navigateToAddNote,
         elevation: 15,
-      ),
-    );
-  }
-}
-
-//Custom widget we created to handle displaying expense data
-class ExpenseItem extends StatelessWidget {
-  final Expense expense;
-
-  ExpenseItem(this.expense);
-
-  @override
-  Widget build(BuildContext context) {
-    //The Padding widget adds some space around its child widget
-    return Padding(
-      /* The EdgeInsets class defines directional area. usually passed to when
-       * padding or margin are needed.
-       * In this case we want all sides to have the same amount of space around
-       * so we use the EdgeInsets.all constructor
-       */
-      padding: const EdgeInsets.all(10),
-      //The Card class creates a floating Card containing the widgets you pass
-      //to it
-      child: Card(
-        //Elevation handles how much shadow is shown under the card
-        elevation: 5,
-
-        /* A ListTile is a Flutter widget that is designed to be shown in a list
-         * its most important parameters are: 
-         * leading: what is shown at the beginning of the tile
-         * title and subtitle: to be shown in the middle of the tile
-         * trailing: to be shown at the end of the tile
-         */
-        child: ListTile(
-          leading: Padding(
-            /* We only need padding on top, so we use the EdgeInsets.only
-             * constructor and pass the amount of padding the top side needs.
-             */
-            padding: const EdgeInsets.only(top: 10),
-            child: Text(
-              /* The $ character is a special string character in flutter and it
-               * indicates that we need to use a variable from the code in the
-               * string. The first $ is 'escaped' by adding a \ character
-               * before it to tell flutter we want to display a $ character
-               * and not use its special functionality
-              */
-              "\$ ${expense.amount.toString()}",
-              /* The style parameter accepts a TextStyle instance that defines
-               * how the text is to be shown and styled. It can contain colors,
-               * fonts, fontsize, weight and so on.
-               */
-
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          title: Text(expense.title),
-          subtitle: Text(expense.time.toIso8601String()),
-        ),
       ),
     );
   }
